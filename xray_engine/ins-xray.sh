@@ -118,7 +118,7 @@ cat > /etc/xray/config.json << END
             "clients": [
                {
                  "id": "${uuid}"                 
-#LUNATIX-VLESS#
+#vless
              }
           ]
        },
@@ -138,7 +138,7 @@ cat > /etc/xray/config.json << END
                {
                  "id": "${uuid}",
                  "alterId": 0
-#LUNATIX-VMESS#
+#vmess
              }
           ]
        },
@@ -158,7 +158,7 @@ cat > /etc/xray/config.json << END
            "clients": [
               {
                  "password": "${uuid}"
-#LUNATIX-TROJAN#
+#trojan
               }
           ],
          "udp": true
@@ -200,7 +200,7 @@ cat > /etc/xray/config.json << END
            "clients": [
              {
                "id": "${uuid}"
-#VLESS-GRPC#
+#vless-grpc
              }
           ]
        },
@@ -220,7 +220,7 @@ cat > /etc/xray/config.json << END
                {
                  "id": "${uuid}",
                  "alterId": 0
-#VMESS-GRPC#
+#vmess-grpc
              }
           ]
        },
@@ -240,7 +240,7 @@ cat > /etc/xray/config.json << END
              "clients": [
                {
                  "password": "${uuid}"
-#TROJAN-GRPC#
+#trojan-grpc
                }
            ]
         },
@@ -383,8 +383,9 @@ WantedBy=multi-user.target
 EOF
 
 #nginx config
+apt install haproxy -y
 wget -O /etc/nginx/conf.d/xray.conf "${REPO}xray_engine/xray.conf"
-wget -O /etc/haproxy/haproxy.cfg "${REPO}xray_engine/haproxy.cfg"
+wget -O /etc/haproxy/haproxy.cfg "https://raw.githubusercontent.com/kipas77pro/FINALIZED/main/xray_engine/haproxy.cfg"
 sed -i 's/xxx/$domain/' /etc/nginx/conf.d/xray.conf
 sed -i 's/xxx/$domain/' /etc/haproxy/haproxy.cfg
 cat /etc/xray/xray.key /etc/xray/xray.crt | tee /etc/haproxy/hap.pem
@@ -394,14 +395,17 @@ echo -e "$yell[SERVICE]$NC Restart All service"
 systemctl daemon-reload
 sleep 0.5
 echo -e "[ ${green}ok${NC} ] Enable & restart xray "
+systemctl stop haproxy
 systemctl daemon-reload
 systemctl enable xray
 systemctl restart xray
 systemctl restart nginx
 systemctl enable haproxy
 systemctl restart haproxy
+systemctl start haproxy
 systemctl enable runn
 systemctl restart runn
+
 
 sleep 0.5
 yellow() { echo -e "\\033[33;1m${*}\\033[0m"; }
