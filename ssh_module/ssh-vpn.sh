@@ -191,15 +191,7 @@ systemctl enable vnstat
 rm -f /root/vnstat-2.6.tar.gz
 rm -rf /root/vnstat-2.6
 
-
 cd
-apt install haproxy -y
-wget -O /etc/haproxy/haproxy.cfg "https://raw.githubusercontent.com/kipas77pro/FINALIZED/main/ssh_module/haproxy.cfg"
-systemctl daemon-reload
-systemctl stop haproxy
-systemctl enable haproxy
-systemctl start haproxy
-
 #OpenVPN
 wget ${REPO}ssh_module/vpn.sh &&  chmod +x vpn.sh && ./vpn.sh
 
